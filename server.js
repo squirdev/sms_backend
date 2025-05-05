@@ -71,7 +71,7 @@ async function insertAdmin() {
       }); // Insert default object
       console.log("Inserted Admin.");
     } else {
-      console.log("Admin already exists, skipping insertion.");
+      console.log("Admin is already exists, skipping insertion.");
     }
   } catch (error) {
     console.error("Error inserting Admin:", error);
