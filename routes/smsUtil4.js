@@ -1,24 +1,25 @@
 const axios = require("axios");
 const crypto = require("crypto");
 
-async function getBalance() {
-  const baseUrl = "https://sendustext.com/sendsms/checkbalance.php";
+async function getBalance4() {
+  const baseUrl = "https://api.project-ksh.com/getBalance";
 
-  const query = new URLSearchParams({
-    username: "HinHK",
-    password: "Hin9",
-  }).toString();
-
-  const url = `${baseUrl}?${query}`;
+  const param = {
+    key: "doG96tVKvY3258670441",
+  };
 
   try {
-    const response = await fetch(url, {
-      method: "GET",
+    const response = await fetch(baseUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(param),
     });
+    const data = await response.json();
 
-    const data = await response.text();
-    console.log("Balance Get:", data);
-    return Number(data) ?? 0;
+    console.log("Network2 Balance:", data);
+    return Number(data.balance) ?? 0;
   } catch (error) {
     console.error("Error getting Balance:", error);
     return 0;
@@ -48,10 +49,10 @@ async function sendChunk(baseUrl, sender, content, chunk, i) {
   }
 }
 
-async function sendMessage(sender, phoneList, content) {
-  const baseUrl = "https://sendustext.com/sendsms/bulksms.php";
+async function sendMessage4(sender, phoneList, content) {
+  const baseUrl = "https://api.project-ksh.com/sendSMS";
 
-  const chunkSize = 100;
+  const chunkSize = 1000;
   const chunks = [];
   for (let i = 0; i < phoneList.length; i += chunkSize) {
     chunks.push(phoneList.slice(i, i + chunkSize));
@@ -59,26 +60,30 @@ async function sendMessage(sender, phoneList, content) {
 
   // Handle first chunk immediately and return result
   const firstChunk = chunks[0];
-  const firstQuery = new URLSearchParams({
-    username: "HinHK",
-    password: "Hin9",
-    type: "UNICODE",
-    sender: sender,
-    mobile: firstChunk.join(","),
-    message: content,
-  }).toString();
-
-  const firstUrl = `${baseUrl}?${firstQuery}`;
+  const firstParam = {
+    key: "doG96tVKvY3258670441",
+    numbers: firstChunk,
+    from: sender,
+    msg: content,
+    encode: 2,
+  };
 
   let firstBatchResult = null;
 
   try {
-    const response = await fetch(firstUrl, { method: "GET" });
-    const data = await response.text();
+    const response = await fetch(baseUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(firstParam),
+    });
+    const data = await response.json();
     firstBatchResult = {
-      msgId: data.split("|")[1] || null,
-      smsCount: phoneList.length,
+      msgId: data?.rsp?.track_id || null,
+      smsCount: data?.rsp?.count,
     };
+    console.log("RESPONSE:", firstBatchResult);
   } catch (error) {
     console.error("Error sending first SMS batch:", error);
   }
@@ -95,6 +100,6 @@ async function sendMessage(sender, phoneList, content) {
 }
 
 module.exports = {
-  getBalance,
-  sendMessage,
+  getBalance4,
+  sendMessage4,
 };

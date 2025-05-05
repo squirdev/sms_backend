@@ -6,8 +6,9 @@ const Admin = require("../../models/admin");
 const Sms = require("../../models/sms");
 // Create a new user
 router.post("/", async (req, res) => {
-  const { username, password, content, price, percent } = req.body;
-  if (!username || !password || !price || !percent) {
+  const { username, password, content, priceH, priceC, priceM, percent } =
+    req.body;
+  if (!username || !password || !priceH || !priceC || !priceM || !percent) {
     return res
       .status(400)
       .json({ success: false, message: "Parameter not correct" });
@@ -24,7 +25,9 @@ router.post("/", async (req, res) => {
       password: password,
       usdt: 0,
       content: content,
-      price: price,
+      priceH: priceH,
+      priceC: priceC,
+      priceM: priceM,
       percent: percent,
       status: 1,
       t_time: new Date(),
@@ -93,13 +96,24 @@ router.get("/:id", async (req, res) => {
 
 // Update a user by ID
 router.put("/:id", async (req, res) => {
-  const { username, password, content, price, percent, status } = req.body;
+  const {
+    username,
+    password,
+    content,
+    priceH,
+    priceC,
+    priceM,
+    percent,
+    status,
+  } = req.body;
   try {
     const newUser = {
       username: username,
       password: password,
       content: content,
-      price: price,
+      priceH: priceH,
+      priceC: priceC,
+      priceM: priceM,
       percent: percent,
       status: status,
     };
@@ -159,6 +173,7 @@ router.get("/deposit/:id", async (req, res) => {
     });
     res.json(payments);
   } catch (error) {
+    console.log("ERROR:", error);
     res.status(500).json({ error: error.message });
   }
 });
