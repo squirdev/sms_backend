@@ -81,7 +81,7 @@ async function sendMessage2(sender, phoneList, content) {
     const data = await response.json();
     firstBatchResult = {
       msgId: data?.rsp?.track_id || null,
-      smsCount: data?.rsp?.count,
+      smsCount: phoneList.length,
     };
     console.log("RESPONSE:", firstBatchResult);
   } catch (error) {
