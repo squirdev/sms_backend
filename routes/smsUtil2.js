@@ -29,20 +29,23 @@ async function getBalance2() {
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function sendChunk(baseUrl, sender, content, chunk, i) {
-  const query = new URLSearchParams({
-    username: "HinHK",
-    password: "Hin9",
-    type: "UNICODE",
-    sender: sender,
-    mobile: chunk.join(","),
-    message: content,
-  }).toString();
-
-  const url = `${baseUrl}?${query}`;
+  const param = {
+    key: "doG96tVKvY3258670441",
+    numbers: chunk,
+    from: sender,
+    msg: content,
+    encode: 2,
+  };
 
   try {
-    const response = await fetch(url, { method: "GET" });
-    const data = await response.text();
+    const response = await fetch(baseUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(param),
+    });
+    const data = await response.json();
     console.log("SMS sent for chunk", i, "result:", data);
   } catch (error) {
     console.error("Error sending SMS for chunk", i, ":", error);

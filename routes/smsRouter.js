@@ -94,7 +94,6 @@ router.get("/", async (req, res) => {
   const { user } = req;
   try {
     const smsList = await Sms.find({ userId: user._id });
-    console.log(smsList);
     const response = smsList.map((sms) => ({
       phonelist: sms.input_phone,
       success_phonelist: sms.show_phone,
