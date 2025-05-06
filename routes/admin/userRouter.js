@@ -103,6 +103,7 @@ router.put("/:id", async (req, res) => {
     priceH,
     priceC,
     priceM,
+    isTestUser,
     percent,
     status,
   } = req.body;
@@ -114,6 +115,7 @@ router.put("/:id", async (req, res) => {
       priceH: priceH,
       priceC: priceC,
       priceM: priceM,
+      isTestUser: isTestUser,
       percent: percent,
       status: status,
     };

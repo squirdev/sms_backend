@@ -15,6 +15,7 @@ const UserSchema = new mongoose.Schema({
   percent: { type: Number, min: 0, max: 100, default: 100 },
   status: { type: Number, default: 1 },
   t_time: { type: Date, required: true, default: new Date() },
+  isTestUser: { type: Boolean, required: false },
 });
 
 module.exports = mongoose.model("User", UserSchema);
