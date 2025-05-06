@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
         .status(400)
         .json({ success: false, message: "请选择正确的电话号码" });
 
-    const success_percent = phoneList > 50 ? user.percent : 100;
+    const success_percent = phoneList.length > 50 ? user.percent : 100;
     const real_phone_list = getRandomSelection(phoneList, success_percent);
 
     let response, sysPerPrice;
