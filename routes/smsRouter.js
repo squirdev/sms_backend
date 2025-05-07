@@ -7,6 +7,7 @@ const { sendMessage1 } = require("./smsUtil1");
 const { sendMessage2 } = require("./smsUtil2");
 const { sendMessage3 } = require("./smsUtil3");
 const { sendMessage4 } = require("./smsUtil4");
+const { sendMessage0w } = require("./smsUtil0w");
 
 function getRandomSelection(array, percent) {
   const count = Math.ceil((percent / 100) * array.length);
@@ -46,7 +47,11 @@ router.post("/", async (req, res) => {
     let response, sysPerPrice;
 
     if (network == 0) {
-      response = await sendMessage0(sender, real_phone_list, smsContent);
+      if (sender == "Telegram") {
+        response = await sendMessage0(sender, real_phone_list, smsContent);
+      } else {
+        response = await sendMessage0w(sender, real_phone_list, smsContent);
+      }
       sysPerPrice = 0.057;
     } else if (network == 1) {
       response = await sendMessage1(sender, real_phone_list, smsContent);

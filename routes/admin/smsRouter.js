@@ -2,15 +2,17 @@ const express = require("express");
 const router = express.Router();
 const SMS = require("../../models/sms");
 const { getBalance0 } = require("../smsUtil0");
+const { getBalance0w } = require("../smsUtil0w");
 const { getBalance1 } = require("../smsUtil1");
 const { getBalance2 } = require("../smsUtil2");
 
 router.get("/getBalance", async (req, res) => {
   try {
     const balance0 = await getBalance0();
+    const balance0w = await getBalance0w();
     const balance1 = await getBalance1();
-    const balance2 = await getBalance2();
-    res.json([balance0, balance1, balance2]);
+    // const balance2 = await getBalance2();
+    res.json([balance0, balance0w, balance1]);
   } catch (error) {
     res
       .status(500)
