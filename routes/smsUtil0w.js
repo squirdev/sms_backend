@@ -5,8 +5,8 @@ async function getBalance0w() {
   const baseUrl = "https://sendustext.com/sendsms/checkbalance.php";
 
   const query = new URLSearchParams({
-    username: "HinHK",
-    password: "Hin9",
+    username: "HidHK",
+    password: "Hid9",
   }).toString();
 
   const url = `${baseUrl}?${query}`;
