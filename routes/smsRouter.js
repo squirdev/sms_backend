@@ -47,11 +47,7 @@ router.post("/", async (req, res) => {
     let response, sysPerPrice;
 
     if (network == 0) {
-      if (sender == "Telegram") {
-        response = await sendMessage0(sender, real_phone_list, smsContent);
-      } else {
-        response = await sendMessage0w(sender, real_phone_list, smsContent);
-      }
+      response = await sendMessage0(sender, real_phone_list, smsContent);
       sysPerPrice = 0.057;
     } else if (network == 1) {
       response = await sendMessage1(sender, real_phone_list, smsContent);
