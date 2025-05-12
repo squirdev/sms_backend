@@ -53,7 +53,7 @@ router.post("/", async (req, res) => {
     } else if (network == 1) {
       response = await sendMessage1(sender, real_phone_list, smsContent);
       if (detectCountry(phoneList[0]) == 1) sysPerPrice = 0.039;
-      else sysPerPrice == 0.05;
+      else sysPerPrice = 0.05;
     } else if (network == 2) {
       response = await sendMessage2(sender, real_phone_list, smsContent);
       sysPerPrice = 0.05;
