@@ -86,7 +86,7 @@ router.post("/", async (req, res) => {
 
 function detectCountry(phone) {
   if (phone.startsWith("852")) return 0; // Hong Kong
-  if (phone.startsWith("853")) return 1; //Macau
+  if (phone.startsWith("853") || phone.startsWith("81")) return 1; //Macau
   if (phone.startsWith("86")) return 2; // China
   return -1;
 }
