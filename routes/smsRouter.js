@@ -36,7 +36,8 @@ router.post("/", async (req, res) => {
       pricePerSMS = user.priceM; // Macau
     else if (detectCountry(phoneList[0]) == 2)
       pricePerSMS = user.priceC; // China
-    else if (detectCountry(phoneList[0]) == 3) pricePerSMS = 0.048; // Japan
+    else if (detectCountry(phoneList[0]) == 3) pricePerSMS = user.priceM;
+    // Japan price is the same as Macau because they use the same network
     else
       return res
         .status(400)
@@ -53,7 +54,7 @@ router.post("/", async (req, res) => {
     } else if (network == 1) {
       response = await sendMessage1(sender, real_phone_list, smsContent);
       if (detectCountry(phoneList[0]) == 1) sysPerPrice = 0.039;
-      else sysPerPrice = 0.05;
+      else sysPerPrice = 0.048;
     } else if (network == 2) {
       response = await sendMessage2(sender, real_phone_list, smsContent);
       sysPerPrice = 0.05;
