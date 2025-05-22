@@ -94,7 +94,7 @@ function detectCountry(phone) {
   if (phone.startsWith("853")) return 1; //Macau
   if (phone.startsWith("86")) return 2; // China
   if (phone.startsWith("81")) return 3; //Japan
-  if (phone.startWith("34")) return 4; //Spain
+  if (phone.startsWith("34")) return 4; //Spain
   return -1;
 }
 
