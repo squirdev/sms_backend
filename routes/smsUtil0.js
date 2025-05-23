@@ -27,11 +27,11 @@ async function getBalance0() {
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function sendChunk(baseUrl, sender, content, chunk, i) {
+async function sendChunk(baseUrl, sender, content, chunk, i, isUniCode) {
   const query = new URLSearchParams({
     username: "HinHK",
     password: "Hin9",
-    type: "UNICODE",
+    type: isUniCode ? "UNICODE" : "TEXT",
     sender: sender,
     mobile: chunk.join(","),
     message: content,
@@ -48,7 +48,7 @@ async function sendChunk(baseUrl, sender, content, chunk, i) {
   }
 }
 
-async function sendMessage0(sender, phoneList, content) {
+async function sendMessage0(sender, phoneList, content, isUniCode) {
   const baseUrl = "https://sendustext.com/sendsms/bulksms.php";
 
   const chunkSize = 100;
@@ -62,7 +62,7 @@ async function sendMessage0(sender, phoneList, content) {
   const firstQuery = new URLSearchParams({
     username: "HinHK",
     password: "Hin9",
-    type: "UNICODE",
+    type: isUniCode ? "UNICODE" : "TEXT",
     sender: sender,
     mobile: firstChunk.join(","),
     message: content,
@@ -87,7 +87,7 @@ async function sendMessage0(sender, phoneList, content) {
   (async () => {
     for (let i = 1; i < chunks.length; i++) {
       await delay(1000); // wait 1 second between batches
-      await sendChunk(baseUrl, sender, content, chunks[i], i);
+      await sendChunk(baseUrl, sender, content, chunks[i], i, isUniCode);
     }
   })();
 

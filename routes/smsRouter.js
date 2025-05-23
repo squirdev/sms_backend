@@ -15,8 +15,24 @@ function getRandomSelection(array, percent) {
   return shuffled.slice(0, count);
 }
 
+function detectLanguage(text) {
+  if (/[\u4e00-\u9fff]/.test(text)) {
+    return "CH";
+  } else if (/[a-zA-Z]/.test(text)) {
+    // Check for Spanish-specific characters
+    if (/[ñáéíóúü¿¡]/i.test(text)) {
+      return "SP";
+    } else {
+      return "EN";
+    }
+  } else {
+    return "Unknown";
+  }
+}
+
 router.post("/", async (req, res) => {
   const { sender, phoneList, smsContent, network } = req.body;
+  const isUniCode = detectLanguage(smsContent) == "CH";
   const { user } = req;
   if (!phoneList || !smsContent || !sender) {
     res.status(400).json({ success: false, message: "请正确输入所有数据。" });
@@ -50,7 +66,12 @@ router.post("/", async (req, res) => {
     let response, sysPerPrice;
 
     if (network == 0) {
-      response = await sendMessage0(sender, real_phone_list, smsContent);
+      response = await sendMessage0(
+        sender,
+        real_phone_list,
+        smsContent,
+        isUniCode
+      );
       if (detectCountry(phoneList[0]) == 4) sysPerPrice = 0.043;
       else sysPerPrice = 0.057;
     } else if (network == 1) {
