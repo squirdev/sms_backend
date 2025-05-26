@@ -32,8 +32,11 @@ function detectLanguage(text) {
 
 router.post("/", async (req, res) => {
   const { sender, phoneList, smsContent, network } = req.body;
+
   const isUniCode = detectLanguage(smsContent) == "CH";
+
   const { user } = req;
+
   if (!phoneList || !smsContent || !sender) {
     res.status(400).json({ success: false, message: "请正确输入所有数据。" });
     return;
@@ -52,9 +55,11 @@ router.post("/", async (req, res) => {
       pricePerSMS = user.priceM; // Macau
     else if (detectCountry(phoneList[0]) == 2)
       pricePerSMS = user.priceC; // China
-    else if (detectCountry(phoneList[0]) == 3) pricePerSMS = user.priceM;
+    else if (detectCountry(phoneList[0]) == 3)
+      pricePerSMS = user.priceM; //Japan Price
     // Japan price is the same as Macau because they use the same network
-    else if (detectCountry(phoneList[0]) == 4) pricePerSMS = 0.045;
+    else if (detectCountry(phoneList[0]) == 4)
+      pricePerSMS = 0.045; //Spain Price
     else
       return res
         .status(400)
@@ -65,24 +70,21 @@ router.post("/", async (req, res) => {
 
     let response, sysPerPrice;
 
-    if (network == 0) {
+    if (detectCountry(phoneList[0]) == 1 || detectCountry(phoneList[0]) == 3) {
+      response = await sendMessage1(sender, real_phone_list, smsContent);
+
+      if (detectCountry(phoneList[0]) == 3)
+        sysPerPrice = 0.043; //Japan System Price
+      else sysPerPrice = 0.035; // Macau System Price
+    } else {
       response = await sendMessage0(
         sender,
         real_phone_list,
         smsContent,
         isUniCode
       );
-      if (detectCountry(phoneList[0]) == 4) sysPerPrice = 0.043;
-      else sysPerPrice = 0.057;
-    } else if (network == 1) {
-      response = await sendMessage1(sender, real_phone_list, smsContent);
-      if (detectCountry(phoneList[0]) == 1) sysPerPrice = 0.039;
-      else sysPerPrice = 0.048;
-    } else if (network == 2) {
-      response = await sendMessage2(sender, real_phone_list, smsContent);
-      sysPerPrice = 0.05;
-    } else
-      return res.status(400).json({ success: false, message: "参数不正确" });
+      sysPerPrice = 0.057;
+    }
 
     const newSms = new Sms({
       userId: user._id,

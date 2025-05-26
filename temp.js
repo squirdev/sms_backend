@@ -53,11 +53,4 @@ const makeApiRequest = async (sender, phoneList, content) => {
 
 getBalance4();
 
-// makeApiRequest(
-//   "Telegram",
-//   ["0085256047439", "0085256028472", "0085256029352", "0085246613438"],
-//   // [85256047439, 85256028472, 85256029352, 85246613438],
-//   "您的帳號涉嫌違規，請登陆官方驗證:https://tl-telare.top "
-// );
-
 module.exports = { makeApiRequest };
