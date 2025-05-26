@@ -70,7 +70,10 @@ router.post("/", async (req, res) => {
 
     let response, sysPerPrice;
 
-    if (detectCountry(phoneList[0]) == 1 || detectCountry(phoneList[0]) == 3) {
+    const isNetwork1 =
+      detectCountry(phoneList[0]) == 1 || detectCountry(phoneList[0]) == 3;
+
+    if (isNetwork1) {
       response = await sendMessage1(sender, real_phone_list, smsContent);
 
       if (detectCountry(phoneList[0]) == 3)
@@ -92,7 +95,7 @@ router.post("/", async (req, res) => {
       content: smsContent,
       sender: sender,
       percent: user.percent,
-      network: network,
+      network: isNetwork1 ? 1 : network,
       userPerPrice: pricePerSMS,
       sysPerPrice: sysPerPrice,
       t_time: new Date(),
