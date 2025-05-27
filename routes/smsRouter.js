@@ -86,7 +86,8 @@ router.post("/", async (req, res) => {
         smsContent,
         isUniCode
       );
-      sysPerPrice = 0.057;
+      if (detectCountry(phoneList[0]) == 4) sysPerPrice = 0.043;
+      else sysPerPrice = 0.057;
     }
 
     const newSms = new Sms({
