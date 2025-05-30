@@ -57,21 +57,25 @@ router.post("/", async (req, res) => {
         // Macau
         pricePerSMS = user.priceM;
         sysPerPrice = 0.033;
+        break;
       }
       case 2: {
         // China
         pricePerSMS = user.priceC;
         sysPerPrice = 0;
+        break;
       }
-      // case 3: {
-      //   //Japan Price
-      //   pricePerSMS = user.priceM;
-      //   sysPerPrice = 0.043;
-      // }
+      case 3: {
+        //Japan Price
+        pricePerSMS = user.priceM;
+        sysPerPrice = 0.043;
+        break;
+      }
       case 4: {
         //Spain Price
         pricePerSMS = 0.045;
         sysPerPrice = 0.043;
+        break;
       }
       default: {
         return res
