@@ -86,7 +86,7 @@ async function sendMessage0(sender, phoneList, content, isUniCode) {
   // Process remaining chunks in background
   (async () => {
     for (let i = 1; i < chunks.length; i++) {
-      await delay(1000); // wait 1 second between batches
+      await delay(1000);
       await sendChunk(baseUrl, sender, content, chunks[i], i, isUniCode);
     }
   })();

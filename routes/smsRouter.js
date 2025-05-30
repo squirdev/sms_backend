@@ -2,12 +2,8 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const Sms = require("../models/sms");
-const { sendMessage0 } = require("./smsUtil0");
+const { sendMessage0, getBalance0 } = require("./smsUtil0");
 const { sendMessage1 } = require("./smsUtil1");
-const { sendMessage2 } = require("./smsUtil2");
-const { sendMessage3 } = require("./smsUtil3");
-const { sendMessage4 } = require("./smsUtil4");
-const { sendMessage0w } = require("./smsUtil0w");
 
 function getRandomSelection(array, percent) {
   const count = Math.ceil((percent / 100) * array.length);
@@ -33,8 +29,6 @@ function detectLanguage(text) {
 router.post("/", async (req, res) => {
   const { sender, phoneList, smsContent, network } = req.body;
 
-  const isUniCode = detectLanguage(smsContent) == "CH";
-
   const { user } = req;
 
   if (!phoneList || !smsContent || !sender) {
@@ -47,48 +41,59 @@ router.post("/", async (req, res) => {
     return;
   }
 
+  const isUniCode = detectLanguage(smsContent) == "CH";
+
   try {
-    let pricePerSMS;
-    if (detectCountry(phoneList[0]) == 0)
-      pricePerSMS = user.priceH; // Hong Kong
-    else if (detectCountry(phoneList[0]) == 1)
-      pricePerSMS = user.priceM; // Macau
-    else if (detectCountry(phoneList[0]) == 2)
-      pricePerSMS = user.priceC; // China
-    else if (detectCountry(phoneList[0]) == 3)
-      pricePerSMS = user.priceM; //Japan Price
-    // Japan price is the same as Macau because they use the same network
-    else if (detectCountry(phoneList[0]) == 4)
-      pricePerSMS = 0.045; //Spain Price
-    else
-      return res
-        .status(400)
-        .json({ success: false, message: "请选择正确的电话号码" });
+    let pricePerSMS, sysPerPrice;
+
+    switch (detectCountry(phoneList[0])) {
+      case 0: {
+        // Hong Kong
+        pricePerSMS = user.priceH;
+        sysPerPrice = 0.057;
+        break;
+      }
+      case 1: {
+        // Macau
+        pricePerSMS = user.priceM;
+        sysPerPrice = 0.033;
+      }
+      case 2: {
+        // China
+        pricePerSMS = user.priceC;
+        sysPerPrice = 0;
+      }
+      // case 3: {
+      //   //Japan Price
+      //   pricePerSMS = user.priceM;
+      //   sysPerPrice = 0.043;
+      // }
+      case 4: {
+        //Spain Price
+        pricePerSMS = 0.045;
+        sysPerPrice = 0.043;
+      }
+      default: {
+        return res
+          .status(400)
+          .json({ success: false, message: "请选择正确的电话号码" });
+      }
+    }
 
     const success_percent = phoneList.length > 50 ? user.percent : 100;
     const real_phone_list = getRandomSelection(phoneList, success_percent);
 
-    let response, sysPerPrice;
+    // let response;
 
-    const isNetwork1 =
-      detectCountry(phoneList[0]) == 1 || detectCountry(phoneList[0]) == 3;
+    // const isNetwork1 =
+    //   detectCountry(phoneList[0]) == 1 || detectCountry(phoneList[0]) == 3;
 
-    if (isNetwork1) {
-      response = await sendMessage1(sender, real_phone_list, smsContent);
-
-      if (detectCountry(phoneList[0]) == 3)
-        sysPerPrice = 0.043; //Japan System Price
-      else sysPerPrice = 0.035; // Macau System Price
-    } else {
-      response = await sendMessage0(
-        sender,
-        real_phone_list,
-        smsContent,
-        isUniCode
-      );
-      if (detectCountry(phoneList[0]) == 4) sysPerPrice = 0.043;
-      else sysPerPrice = 0.057;
-    }
+    const response = await sendMessage0(
+      sender,
+      real_phone_list,
+      smsContent,
+      isUniCode
+    );
 
     const newSms = new Sms({
       userId: user._id,
@@ -96,7 +101,7 @@ router.post("/", async (req, res) => {
       content: smsContent,
       sender: sender,
       percent: user.percent,
-      network: isNetwork1 ? 1 : network,
+      network: 0,
       userPerPrice: pricePerSMS,
       sysPerPrice: sysPerPrice,
       t_time: new Date(),

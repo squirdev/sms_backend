@@ -2,16 +2,11 @@ const express = require("express");
 const router = express.Router();
 const SMS = require("../../models/sms");
 const { getBalance0 } = require("../smsUtil0");
-const { getBalance0w } = require("../smsUtil0w");
-const { getBalance1 } = require("../smsUtil1");
-const { getBalance2 } = require("../smsUtil2");
 
-router.get("/getBalance", async (req, res) => {
+router.get("/getBalance", async (_, res) => {
   try {
     const balance0 = await getBalance0();
-    const balance1 = await getBalance1();
-    // const balance2 = await getBalance2();
-    res.json([balance0, balance1]);
+    res.json(balance0);
   } catch (error) {
     res
       .status(500)
@@ -36,6 +31,7 @@ router.get("/", async (req, res) => {
         $lte: end,
       };
     }
+
     const smsList = await SMS.find(filter)
       .populate("userId")
       .sort({ t_time: -1 });
