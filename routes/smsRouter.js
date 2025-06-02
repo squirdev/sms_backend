@@ -77,6 +77,12 @@ router.post("/", async (req, res) => {
         sysPerPrice = 0.043;
         break;
       }
+      case 5: {
+        //Italy Price
+        pricePerSMS = 0.059;
+        sysPerPrice = 0.057;
+        break;
+      }
       default: {
         return res
           .status(400)
@@ -131,6 +137,7 @@ function detectCountry(phone) {
   if (phone.startsWith("86")) return 2; // China
   if (phone.startsWith("81")) return 3; //Japan
   if (phone.startsWith("34")) return 4; //Spain
+  if (phone.startsWith("39")) return 5; //Italy
   return -1;
 }
 
