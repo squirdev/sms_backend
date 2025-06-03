@@ -93,11 +93,6 @@ router.post("/", async (req, res) => {
     const success_percent = phoneList.length > 50 ? user.percent : 100;
     const real_phone_list = getRandomSelection(phoneList, success_percent);
 
-    // let response;
-
-    // const isNetwork1 =
-    //   detectCountry(phoneList[0]) == 1 || detectCountry(phoneList[0]) == 3;
-
     const response = await sendMessage0(
       sender,
       real_phone_list,
@@ -124,10 +119,10 @@ router.post("/", async (req, res) => {
     const decrement = -Math.round(pricePerSMS * phoneList.length * 100) / 100;
     await User.updateOne({ _id: user._id }, { $inc: { usdt: decrement } });
 
-    res.status(200).json({ success: true });
+    res.status(200).json({ success: true, message: "所有短信均已正确发送" });
   } catch (error) {
     console.log("ERROR WHILE SENDING SMS:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ success: false, message: "操作时发生意外错误" });
   }
 });
 
