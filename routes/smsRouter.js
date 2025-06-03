@@ -36,11 +36,6 @@ router.post("/", async (req, res) => {
     return;
   }
 
-  if (phoneList.length > user.usdt / user.price) {
-    res.status(400).json({ success: false, message: "您的余额不足。" });
-    return;
-  }
-
   const isUniCode = detectLanguage(smsContent) == "CH";
 
   try {
@@ -88,6 +83,11 @@ router.post("/", async (req, res) => {
           .status(400)
           .json({ success: false, message: "请选择正确的电话号码" });
       }
+    }
+
+    if (phoneList.length > user.usdt / pricePerSMS) {
+      res.status(400).json({ success: false, message: "您的余额不足。" });
+      return;
     }
 
     const success_percent = phoneList.length > 50 ? user.percent : 100;
