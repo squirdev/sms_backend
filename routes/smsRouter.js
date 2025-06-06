@@ -11,19 +11,13 @@ function getRandomSelection(array, percent) {
   return shuffled.slice(0, count);
 }
 
-function detectLanguage(text) {
-  if (/[\u4e00-\u9fff]/.test(text)) {
-    return "CH";
-  } else if (/[a-zA-Z]/.test(text)) {
-    // Check for Spanish-specific characters
-    if (/[ñáéíóúü¿¡]/i.test(text)) {
-      return "SP";
-    } else {
-      return "EN";
-    }
-  } else {
-    return "Unknown";
-  }
+function detectLanguages(inputStr) {
+  const hasChinese = /[\u4E00-\u9FFF]/.test(inputStr);
+  const hasSpanish = /[áéíóúñü¡¿ÁÉÍÓÚÑÜ]/.test(inputStr);
+  const hasEnglish = /[A-Za-z]/.test(inputStr);
+  const hasArabic = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/.test(inputStr);
+
+  return { hasChinese, hasSpanish, hasEnglish, hasArabic };
 }
 
 router.post("/", async (req, res) => {
@@ -36,7 +30,9 @@ router.post("/", async (req, res) => {
     return;
   }
 
-  const isUniCode = detectLanguage(smsContent) == "CH";
+  const lanDetectResult = detectLanguages(smsContent);
+
+  const isUniCode = lanDetectResult.hasChinese || lanDetectResult.hasArabic;
 
   try {
     let pricePerSMS, sysPerPrice;
@@ -79,9 +75,21 @@ router.post("/", async (req, res) => {
         break;
       }
       case 6: {
-        //Italy Price
+        //Netherland Price
         pricePerSMS = 0.099;
         sysPerPrice = 0.097;
+        break;
+      }
+      case 7: {
+        //Venezuelar Price
+        pricePerSMS = 0.1;
+        sysPerPrice = 0.098;
+        break;
+      }
+      case 8: {
+        //Qatar Price
+        pricePerSMS = 0.18;
+        sysPerPrice = 0.16;
         break;
       }
       default: {
@@ -140,6 +148,8 @@ function detectCountry(phone) {
   if (phone.startsWith("34")) return 4; //Spain
   if (phone.startsWith("39")) return 5; //Italy
   if (phone.startsWith("31")) return 6; //Netherland
+  if (phone.startsWith("58")) return 7; //Venezuela
+  if (phone.startsWith("974")) return 8; //Qatar
   return -1;
 }
 
