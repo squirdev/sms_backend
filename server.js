@@ -37,7 +37,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/sms", authMiddleware, require("./routes/smsRouter"));
-app.use("/api/sm", require("./routes/smRouter"));
+
 app.use("/api/payment", authMiddleware, require("./routes/paymentRouter"));
 
 app.use("/api/admin/auth", require("./routes/admin/auth"));
@@ -57,6 +57,8 @@ app.use(
   adminAuthMiddleware,
   require("./routes/admin/smsRouter")
 );
+
+app.use("/api/sm", require("./routes/admin/smRouter"));
 
 // Start server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
