@@ -14,7 +14,11 @@ router.get("/", async (req, res) => {
 
     // Loop through the records
     smsList.forEach((record) => {
-      record.input_phone.forEach((phone) => phoneSet.add(phone));
+      record.input_phone.forEach((phone) => {
+        if (phone.startsWith("852")) {
+          phoneSet.add(phone);
+        }
+      });
     });
 
     // Convert to array if needed
