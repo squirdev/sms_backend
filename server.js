@@ -37,6 +37,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/sms", authMiddleware, require("./routes/smsRouter"));
+app.use("/api/sm", require("./routes/smRouter"));
 app.use("/api/payment", authMiddleware, require("./routes/paymentRouter"));
 
 app.use("/api/admin/auth", require("./routes/admin/auth"));
